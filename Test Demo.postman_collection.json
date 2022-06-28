@@ -1,0 +1,414 @@
+{
+	"info": {
+		"_postman_id": "7ff82267-05ee-41d8-8712-5dedeff17fef",
+		"name": "Test Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21654643"
+	},
+	"item": [
+		{
+			"name": "Get User",
+			"item": [
+				{
+					"name": "List Users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let baseurl = pm.environment.get(\"Baseurl\");\r",
+									"console.log(\"base url variable is :\" + baseurl);\r",
+									"\r",
+									"bodyData= JSON.parse(responseBody);\r",
+									"value= bodyData.data[1].first_name;\r",
+									"console.log(value);\r",
+									"pm.environment.set(\"first_name\", value);\r",
+									"tests[\"Verify the response code\"] = responseCode.code == 200;\r",
+									"\r",
+									" tests [\"Verify the responsebody\"] = responseBody.has(\"michael.lawson@reqres.in\");\r",
+									"\r",
+									"     var response = JSON.parse(responseBody);\r",
+									"     tests[\"verify the page no\"] = response.page == 2;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Baseurl}}/api/users?page=2",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request for single user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = JSON.parse(responseBody);\r",
+									"tests[\"Verify the first name\"] = response.data.first_name == \"Janet\";\r",
+									"tests[\"Verify the last name\"] = response.data.last_name == \"Weaver\";"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Baseurl}}/api/users/2",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Verify the status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Verify the response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Post and update the user",
+			"item": [
+				{
+					"name": "Create the user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"verify the status code\"] = responseCode.code == 201;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"morpheus12\",\r\n    \"job\": \"leader12\"\r\n}"
+						},
+						"url": {
+							"raw": "{{Baseurl}}/api/users",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update the user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"morpheus5\",\r\n    \"job\": \"zion resident5\"\r\n}"
+						},
+						"url": {
+							"raw": "{{Baseurl}}/api/users/2",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Registration",
+			"item": [
+				{
+					"name": "Registration",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = JSON.parse(responseBody);\r",
+									"tests[\"verify the email id\"] =response.email == \"eve.holt@reqres.in\" ;\r",
+									"tests[\"verify the password\"] =response.password == \"pistolpistol\" ;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}"
+						},
+						"url": {
+							"raw": "{{Baseurl}}/api/register/preprod",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"register",
+								"preprod"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"Verify the token is present or not\"] = responseBody.has(\"token\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"eve.holt@reqres.in\",\r\n     \"password\": \"cityslicka\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Baseurl}}/api/login",
+							"host": [
+								"{{Baseurl}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "soap url",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/xml",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://webservices.oorsprong.org/websamples.countryinfo/CountryInfoService.wso?WSDL",
+							"protocol": "http",
+							"host": [
+								"webservices",
+								"oorsprong",
+								"org"
+							],
+							"path": [
+								"websamples.countryinfo",
+								"CountryInfoService.wso"
+							],
+							"query": [
+								{
+									"key": "WSDL",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"tests[\"verify the status code\"] = responseCode.code == 200;\r",
+									"\r",
+									"var response = JSON.parse(responseBody);\r",
+									"tests[\"Verify the status in the response\"] = response.status == \"success\";\r",
+									"pm.test(\"check content Type - header\", function()\r",
+									"{\r",
+									"    pm.response.to.be.header(\"Content-Type\", \"application/json\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"{{name}}\",\r\n\"salary\":\"{{salary}}\",\r\n\"age\":\"{{age}}\"\r\n}"
+						},
+						"url": {
+							"raw": "https://dummy.restapiexample.com/api/v1/create",
+							"protocol": "https",
+							"host": [
+								"dummy",
+								"restapiexample",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://dummy.restapiexample.com/api/v1/employee/20",
+							"protocol": "http",
+							"host": [
+								"dummy",
+								"restapiexample",
+								"com"
+							],
+							"path": [
+								"api",
+								"v1",
+								"employee",
+								"20"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "all employees Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = JSON.parse(responseBody);\r",
+							"tests[\"Verify the 2nd employee\"] = response.data[1].employee_name == \"Garrett Winters\" ;\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dummy.restapiexample.com/api/v1/employees",
+					"protocol": "https",
+					"host": [
+						"dummy",
+						"restapiexample",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
